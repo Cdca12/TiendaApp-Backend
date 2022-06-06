@@ -1,5 +1,4 @@
 -- Create database
-
 USE master
 GO
 CREATE DATABASE TiendaApp;
@@ -10,7 +9,7 @@ GO
 
 -- Create tables
 
--- Productos
+-- (Productos)
 CREATE TABLE Product (
   ProductID int PRIMARY KEY IDENTITY,
   ProductName varchar(255),
@@ -24,7 +23,7 @@ CREATE TABLE Category (
 )
 GO
 
--- CategoriasProductos
+-- (CategoriasProductos)
 CREATE TABLE ProductCategory (
   ProductID int FOREIGN KEY REFERENCES Product,
   CategoryID int FOREIGN KEY REFERENCES Category,
@@ -33,16 +32,16 @@ CREATE TABLE ProductCategory (
 GO
 
 CREATE TABLE Client (
-  ClientID int PRIMARY KEY,
+  ClientID int PRIMARY KEY IDENTITY,
   ClientName varchar(255)
 )
 GO
 
--- Pedidos
+-- (Pedidos)
 CREATE TABLE [Order] (
   OrderID int PRIMARY KEY IDENTITY,
-  OrderDate datetime,
-  OrderTotal decimal(19,4),
+  OrderDate date,
+  OrderTotal decimal(13,2),
   ClientID int FOREIGN KEY REFERENCES Client
 )
 GO
@@ -51,8 +50,5 @@ CREATE TABLE OrderDetail (
   OrderID int FOREIGN KEY REFERENCES [Order],
   ProductID int FOREIGN KEY REFERENCES Product,
   OrderQuantity int,
-  OrderProductPrice int,
   PRIMARY KEY (OrderID, ProductID)
 )
-
-
