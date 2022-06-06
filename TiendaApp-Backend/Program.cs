@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using TiendaApp_Backend.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<TiendaApp_BackendContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TiendaApp_BackendContext") ?? throw new InvalidOperationException("Connection string 'TiendaApp_BackendContext' not found.")));
 
 // Add services to the container.
 
