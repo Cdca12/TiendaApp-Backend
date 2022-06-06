@@ -84,14 +84,37 @@ namespace TiendaApp_Backend.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<Order>> PostOrder(Cart cart)
         {
-          if (_context.Order == null)
-          {
-              return Problem("Entity set 'TiendaApp_BackendContext.Order'  is null.");
-          }
+            if (_context.Order == null)
+            {
+                return Problem("Entity set 'TiendaApp_BackendContext.Order'  is null.");
+            }
+
+            // Get total for every product (they're saved in order)
+            var productTotal = cart.ProductsId.Select((productId, i) => _context.Product.Find(productId).ProductPrice * cart.Quantity[i]).ToList();
+
+            // Create order
+            Order order = new Order();
+            order.OrderDate = DateTime.Now;
+            order.OrderTotal = productTotal.Sum();
+            order.ClientID = cart.ClientID;
+
             _context.Order.Add(order);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges(); // Important to save in db to get Id later
+
+            // Create OrderDetail
+            OrderDetail orderDetail;
+            for (int i = 0; i < cart.ProductsId.Length; i++)
+            {
+                orderDetail = new OrderDetail();
+                orderDetail.OrderID = order.OrderID;
+                orderDetail.ProductID = cart.ProductsId[i];
+                orderDetail.OrderQuantity = cart.Quantity[i];
+                orderDetail.OrderTotalProduct = productTotal[i];
+                _context.OrderDetail.Add(orderDetail);
+            }
+            _context.SaveChanges();
 
             return CreatedAtAction("GetOrder", new { id = order.OrderID }, order);
         }

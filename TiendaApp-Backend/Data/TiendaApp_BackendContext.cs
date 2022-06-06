@@ -14,6 +14,12 @@ namespace TiendaApp_Backend.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderDetail>()
+                .HasKey(OrderDetail => new { OrderDetail.OrderID, OrderDetail.ProductID });
+        }
+
         public DbSet<TiendaApp_Backend.Models.Product>? Product { get; set; }
 
         public DbSet<TiendaApp_Backend.Models.Category>? Category { get; set; }
@@ -21,5 +27,7 @@ namespace TiendaApp_Backend.Data
         public DbSet<TiendaApp_Backend.Models.Client>? Client { get; set; }
 
         public DbSet<TiendaApp_Backend.Models.Order>? Order { get; set; }
+
+        public DbSet<TiendaApp_Backend.Models.OrderDetail>? OrderDetail { get; set; }
     }
 }
