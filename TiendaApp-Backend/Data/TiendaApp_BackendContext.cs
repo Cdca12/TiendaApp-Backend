@@ -19,5 +19,7 @@ namespace TiendaApp_Backend.Data
         public DbSet<TiendaApp_Backend.Models.Category>? Category { get; set; }
 
         public DbSet<TiendaApp_Backend.Models.Client>? Client { get; set; }
+
+        public DbSet<TiendaApp_Backend.Models.Order>? Order { get; set; }
     }
 }
