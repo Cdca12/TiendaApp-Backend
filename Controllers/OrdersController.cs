@@ -29,7 +29,7 @@ namespace TiendaApp_Backend.Controllers
           {
               return NotFound();
           }
-            return await _context.Order.ToListAsync();
+          return await _context.Order.ToListAsync();
         }
 
         // GET: api/Orders/5
@@ -48,6 +48,43 @@ namespace TiendaApp_Backend.Controllers
             }
 
             return order;
+        }
+
+        // GET: api/Orders/detail/5
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult<IEnumerable<OrderDetailReport>>> GetOrderDetail(int id)
+        {
+            if (_context.Order == null)
+            {
+                return NotFound();
+            }
+
+
+            // Get all info of Order, OrderDetail and Product
+            List<OrderDetailReport> report =
+                (from orderDetail in _context.OrderDetail
+                join order in _context.Order on orderDetail.OrderID equals order.OrderID
+                join product in _context.Product on orderDetail.ProductID equals product.ProductID
+                where orderDetail.OrderID == id
+                select new OrderDetailReport
+                {
+                    OrderID = order.OrderID,
+                    OrderDate = order.OrderDate,
+                    OrderTotal = order.OrderTotal,
+                    ClientID = order.ClientID,
+                    ProductID = product.ProductID,
+                    ProductName = product.ProductName,
+                    ProductPrice = product.ProductPrice,
+                    OrderQuantity = orderDetail.OrderQuantity,
+                    OrderTotalProduct = orderDetail.OrderTotalProduct
+                }).ToList();
+
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            return report;
         }
 
         // PUT: api/Orders/5
