@@ -10,7 +10,7 @@ namespace TiendaApp_Backend.Models
         [Key, Column(Order = 1)]
         public int ProductID { get; set; }
         public int OrderQuantity { get; set; }
-        public int OrderTotalProduct { get; set; }
+        public decimal OrderTotalProduct { get; set; }
 
     }
 }
