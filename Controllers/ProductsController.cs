@@ -50,6 +50,40 @@ namespace TiendaApp_Backend.Controllers
             return product;
         }
 
+        // GET: api/Products/Categories/5
+        [HttpGet("categories/{categoryID}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategoryId(int categoryID)
+        {
+            if (_context.Product == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Category.FindAsync(categoryID);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            List<Product> productsByCategoryId =
+                (from product in _context.Product
+                 join categoryProduct in _context.CategoryProduct on product.ProductID equals categoryProduct.ProductID
+                 where categoryProduct.CategoryID == categoryID
+                 select new Product
+                 {
+                     ProductID = product.ProductID,
+                     ProductName = product.ProductName,
+                     ProductPrice = product.ProductPrice
+                 }).ToList();
+
+            if (productsByCategoryId == null)
+            {
+                return NotFound();
+            }
+
+            return productsByCategoryId;
+        }
+
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

@@ -18,6 +18,9 @@ namespace TiendaApp_Backend.Data
         {
             modelBuilder.Entity<OrderDetail>()
                 .HasKey(OrderDetail => new { OrderDetail.OrderID, OrderDetail.ProductID });
+
+            modelBuilder.Entity<CategoryProduct>()
+                .HasKey(CategoryProduct => new { CategoryProduct.CategoryID, CategoryProduct.ProductID });
         }
 
         public DbSet<TiendaApp_Backend.Models.Product>? Product { get; set; }
@@ -29,5 +32,7 @@ namespace TiendaApp_Backend.Data
         public DbSet<TiendaApp_Backend.Models.Order>? Order { get; set; }
 
         public DbSet<TiendaApp_Backend.Models.OrderDetail>? OrderDetail { get; set; }
+
+        public DbSet<TiendaApp_Backend.Models.CategoryProduct>? CategoryProduct { get; set; }
     }
 }
