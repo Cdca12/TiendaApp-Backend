@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 // Services cors
 builder.Services.AddCors(p => p.AddPolicy("CorsApp", builder =>
 {
-    builder.WithOrigins("https://localhost:44312/api").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
 var app = builder.Build();

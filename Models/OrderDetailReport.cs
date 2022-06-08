@@ -6,6 +6,7 @@
         public DateTime OrderDate { get; set; }
         public decimal OrderTotal { get; set; }
         public int ClientID { get; set; }
+        public string ClientName { get; set; }
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }

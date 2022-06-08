@@ -59,19 +59,20 @@ namespace TiendaApp_Backend.Controllers
                 return NotFound();
             }
 
-
             // Get all info of Order, OrderDetail and Product
-            List<OrderDetailReport> report =
+            List<OrderDetailReport> orderDetailReport =
                 (from orderDetail in _context.OrderDetail
                 join order in _context.Order on orderDetail.OrderID equals order.OrderID
                 join product in _context.Product on orderDetail.ProductID equals product.ProductID
+                join client  in _context.Client on order.ClientID equals client.ClientID
                 where orderDetail.OrderID == id
                 select new OrderDetailReport
                 {
                     OrderID = order.OrderID,
                     OrderDate = order.OrderDate,
                     OrderTotal = order.OrderTotal,
-                    ClientID = order.ClientID,
+                    ClientID = client.ClientID,
+                    ClientName = client.ClientName,
                     ProductID = product.ProductID,
                     ProductName = product.ProductName,
                     ProductPrice = product.ProductPrice,
@@ -79,12 +80,12 @@ namespace TiendaApp_Backend.Controllers
                     OrderTotalProduct = orderDetail.OrderTotalProduct
                 }).ToList();
 
-            if (report == null)
+            if (orderDetailReport == null)
             {
                 return NotFound();
             }
 
-            return report;
+            return orderDetailReport;
         }
 
         // PUT: api/Orders/5
@@ -129,7 +130,7 @@ namespace TiendaApp_Backend.Controllers
             }
 
             // Get total for every product (they're saved in order)
-            var productTotal = cart.ProductsId.Select((productId, i) => _context.Product.Find(productId).ProductPrice * cart.Quantity[i]).ToList();
+            var productTotal = cart.ProductsID.Select((productId, i) => _context.Product.Find(productId).ProductPrice * cart.Quantity[i]).ToList();
 
             // Create order
             Order order = new Order();
@@ -142,11 +143,11 @@ namespace TiendaApp_Backend.Controllers
 
             // Create OrderDetail
             OrderDetail orderDetail;
-            for (int i = 0; i < cart.ProductsId.Length; i++)
+            for (int i = 0; i < cart.ProductsID.Length; i++)
             {
                 orderDetail = new OrderDetail();
                 orderDetail.OrderID = order.OrderID;
-                orderDetail.ProductID = cart.ProductsId[i];
+                orderDetail.ProductID = cart.ProductsID[i];
                 orderDetail.OrderQuantity = cart.Quantity[i];
                 orderDetail.OrderTotalProduct = productTotal[i];
                 _context.OrderDetail.Add(orderDetail);
