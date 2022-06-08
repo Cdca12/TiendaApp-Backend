@@ -84,6 +84,38 @@ namespace TiendaApp_Backend.Controllers
             return productsByCategoryId;
         }
 
+        // GET: api/Products/Categories/missing/5
+        [HttpGet("categories/not/{categoryID}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsNotInCategory(int categoryID)
+        {
+            if (_context.Product == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Category.FindAsync(categoryID);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            List<Product> productsNotInCategory = _context.Product
+                .FromSqlRaw(
+                    "SELECT * FROM Product " +
+                    "WHERE ProductID NOT IN(" +
+                    "   SELECT ProductID FROM CategoryProduct " +
+                    "   WHERE CategoryID = {0}" +
+                    ");", categoryID)
+                .ToList();
+
+            if (productsNotInCategory == null)
+            {
+                return NotFound();
+            }
+
+            return productsNotInCategory;
+        }
+
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
